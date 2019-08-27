@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import numeral from 'numeral';
+import { Dropdown } from 'semantic-ui-react';
 import { MdGroup } from "react-icons/md";
 import { IoMdHome } from "react-icons/io";
+
 import API from './utils/API.js';
 
 
@@ -16,7 +18,9 @@ const App = () => {
 
     const [data, setData] = useState();
 
-    const unitSize = 1000;
+    const [optionsArray, setOptionsArray] = useState();
+
+    const unitSize = 500;
 
     const iconSize = '30px'
 
@@ -75,6 +79,16 @@ const App = () => {
         
     ]
 
+    const handleOptions = () => {
+        const options = cityData ? cityData.map(option => ({
+            key: option.Id2,
+            value: option.Id2,
+            text: option.Geography
+        })) : null
+        setOptionsArray(options)
+        }
+
+    
     const handleData = () => {
         const data = geotype === 'tract' ? tractData : geotype === 'city' ? cityData : null;
         const filteredData = data && geoID ? data.find(obj => obj.Id2 === geoID) : null;
@@ -100,63 +114,75 @@ const App = () => {
     const supplyIcon = <div style={{float: 'left', backgroundColor: 'red', width: '20px', height: '20px', margin: '2px'}}> </div>;
 
 
+    
     useEffect(() => handleData(), [geoID])
+    useEffect(() => handleOptions(), [])
 
     return(
-        <div style={{ padding: '20px'}}>
+        <div style={{ padding: '30px'}}>
         { data ?
-            <div> 
-            <h1>
-                { data.Geography }
-            </h1>
-            <div style={{ float: 'left', padding: '20px', width: '50%'}}>
-            <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Demand</h2>
-            {/* <h4 style={{float: 'left', width: '100%', marginTop: '0px'}}>by Household Income</h4> */}
-            <div style={{float: 'left', width: '100%', marginBottom: '10px'}}>{demandIcon} = {numeral(unitSize).format('0,0')} households</div>
-            {
-                labelArray.filter(labelObj => labelObj.type === 'Housing Demand')
-                .reverse()    
-                .map(labelObj => 
-                    <div style={{float: 'left', width: '100%'}}>
-                    <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
-                    {
-                    iconRepeater(
-                    labelObj.name, 
-                    unitSize, <MdGroup style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
-                }
-                    </div>
-                )
-            }
-            </div>
-            <div style={{ 
-                // zIndex: '-1', 
-                // position: 'relative', 
-                // right: '50%', 
-                float: 'left', padding: '20px', width: '50%'}}>
+            <div>
+                <h1 style={{ fontSize: '4em', width: '100%', textAlign: 'center', }}>
+                    { data.Geography }
+                </h1>
+                <div style={{ width: '100%', textAlign: 'center', marginBottom: '20px' }}>
 
-            <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Supply</h2>
-            <div style={{float: 'right', width: '100%',marginBottom: '10px'}}>{supplyIcon} = {numeral(unitSize).format('0,0')} households</div>
-            {
-                labelArray.filter(labelObj => labelObj.type === 'Housing Supply')
-                .reverse()    
-                .map(labelObj => 
-                    <div style={{float: 'left', width: '100%'}}>
-                    <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
-                    {
-                    iconRepeater(
-                    labelObj.name, 
-                    unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
-                }
-                    </div>
-                )
-            }
-            </div>
-            {/* <h3>$100K or more</h3>
+                < Dropdown
+                    placeholder='Change City'
+                    search
+                    selection 
+                    options={optionsArray}
+                    onChange={(event, data) => setGeoID(data.value)} />  
+                </div>
+
+                <div style={{ float: 'left', padding: '20px', width: '50%'}}>
+                <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Demand</h2>
+                {/* <h4 style={{float: 'left', width: '100%', marginTop: '0px'}}>by Household Income</h4> */}
+                <div style={{float: 'left', width: '100%', marginBottom: '10px'}}>{demandIcon} = {numeral(unitSize).format('0,0')} households</div>
                 {
-                    iconRepeater(
-                    'Housing Demand: $100,000 or more', 
-                    unitSize, demandIcon).map(icon => icon)
-                } */}
+                    labelArray.filter(labelObj => labelObj.type === 'Housing Demand')
+                    .reverse()    
+                    .map(labelObj => 
+                        <div style={{float: 'left', width: '100%'}}>
+                        <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
+                        {
+                        iconRepeater(
+                        labelObj.name, 
+                        unitSize, <MdGroup style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                    }
+                        </div>
+                    )
+                }
+                </div>
+                <div style={{ 
+                    // zIndex: '-1', 
+                    // position: 'relative', 
+                    // right: '50%', 
+                    float: 'left', padding: '20px', width: '50%'}}>
+
+                <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Supply</h2>
+                <div style={{float: 'right', width: '100%',marginBottom: '10px'}}>{supplyIcon} = {numeral(unitSize).format('0,0')} households</div>
+                {
+                    labelArray.filter(labelObj => labelObj.type === 'Housing Supply')
+                    .reverse()    
+                    .map(labelObj => 
+                        <div style={{float: 'left', width: '100%'}}>
+                        <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
+                        {
+                        iconRepeater(
+                        labelObj.name, 
+                        unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                    }
+                        </div>
+                    )
+                }
+                </div>
+                {/* <h3>$100K or more</h3>
+                    {
+                        iconRepeater(
+                        'Housing Demand: $100,000 or more', 
+                        unitSize, demandIcon).map(icon => icon)
+                    } */}
             </div>
         : null }
         </div>)
