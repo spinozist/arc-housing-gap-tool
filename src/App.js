@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import numeral from 'numeral';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Radio } from 'semantic-ui-react';
 import { MdGroup } from "react-icons/md";
 import { IoMdHome } from "react-icons/io";
 
@@ -20,9 +20,11 @@ const App = () => {
 
     const [optionsArray, setOptionsArray] = useState();
 
-    const unitSize = 500;
+    const [unitSize, setUnitSize] = useState(100);
 
-    const iconSize = '30px'
+    const iconSize = '40px';
+
+    const [gapAnalysis, setGapAnalysis] = useState();
 
     const labelArray = [
 
@@ -105,13 +107,11 @@ const App = () => {
         for (let i=0; i < numberOfRepeats; i++) {
             iconArray.push(icon);
         }
-
         return iconArray
-        
     }
 
-    const demandIcon = <div style={{float: 'left', backgroundColor: 'blue', width: '20px', height: '20px', margin: '2px'}}> </div>;
-    const supplyIcon = <div style={{float: 'left', backgroundColor: 'red', width: '20px', height: '20px', margin: '2px'}}> </div>;
+    // const demandIcon = <div style={{float: 'left', backgroundColor: 'lightgrey', width: '20px', height: '20px', margin: '2px'}}> </div>;
+    // const supplyIcon = <div style={{float: 'left', backgroundColor: 'lightgrey', width: '20px', height: '20px', margin: '2px'}}> </div>;
 
 
     
@@ -119,7 +119,7 @@ const App = () => {
     useEffect(() => handleOptions(), [])
 
     return(
-        <div style={{ padding: '30px'}}>
+        <div style={{ height: '250vh', padding: '30px'}}>
         { data ?
             <div>
                 <h1 style={{ fontSize: '4em', width: '100%', textAlign: 'center', }}>
@@ -132,57 +132,137 @@ const App = () => {
                     search
                     selection 
                     options={optionsArray}
-                    onChange={(event, data) => setGeoID(data.value)} />  
+                    onChange={(event, data) => setGeoID(data.value)}
+                />
+                 <br></br>
+                 Each <MdGroup /> equals 
+                < Dropdown
+                    placeholder={unitSize}
+                    selection
+                    compact
+                    style={{ margin: '10px 0 10px 0'}}
+                    options={[
+                        {key: 10, value: 10, text: '10'},
+                        {key: 100, value: 100, text: '100'},
+                        {key: 500, value: 500, text: '500'},
+                        {key: 1000, value: 1000, text: '1,000'},
+                        {key: 5000, value: 5000, text: '5,000'},
+                    ]}
+                    onChange={(event, data) => setUnitSize(data.value)}
+                />
+                <br></br>
+                <h3 style={{ margin: '20px 0 0 0'}}>Run Gap Analysis</h3>
+                < Radio 
+                    style={{ marginTop: '5px'}}
+                    // label='Run Gap Analysis'
+                    toggle 
+                    onChange={(event, data) => setGapAnalysis(data.checked)}
+                />  
                 </div>
 
-                <div style={{ float: 'left', padding: '20px', width: '50%'}}>
-                <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Demand</h2>
-                {/* <h4 style={{float: 'left', width: '100%', marginTop: '0px'}}>by Household Income</h4> */}
-                <div style={{float: 'left', width: '100%', marginBottom: '10px'}}>{demandIcon} = {numeral(unitSize).format('0,0')} households</div>
+                <div style={{ 
+                    zIndex: gapAnalysis ? '1' : null,
+                    position: gapAnalysis ? 'absolute' : 'relative', 
+                    top: gapAnalysis ? '35%' : '0',
+                    float: 'left',
+                    padding: '20px',
+                    width: gapAnalysis ? '100%' : '50%'}}
+                >
+                    <h2 style={{
+                        float: 'left',
+                        width: '100%',
+                        lineHeight: '20px'}}
+                    >
+                        {gapAnalysis ? 'Housing Gap Analysis' : 'Housing Demand'}
+                    </h2>
+                    <div 
+                        style={{
+                            float: 'left',
+                            width: '100%',
+                            marginBottom: '10px',
+                            verticalAlign: 'center'
+                        }}>
+                            <MdGroup 
+                                style={{
+                                    padding: gapAnalysis ? '10px' : null, 
+                                    float: 'left', 
+                                    height: iconSize, 
+                                    width: iconSize}}
+                                /> 
+                            <h4 style={{
+                                    float: 'left',
+                                    margin: '8px 0 0 5px'}}>
+                                = {numeral(unitSize).format('0,0')} 
+                                {gapAnalysis ? ' households in housing units' : ' households'}
+                            </h4>
+                    </div>
                 {
                     labelArray.filter(labelObj => labelObj.type === 'Housing Demand')
                     .reverse()    
                     .map(labelObj => 
+                        !gapAnalysis ?
                         <div style={{float: 'left', width: '100%'}}>
-                        <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
-                        {
-                        iconRepeater(
-                        labelObj.name, 
-                        unitSize, <MdGroup style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
-                    }
-                        </div>
+                            <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
+                            {
+                            iconRepeater(
+                                labelObj.name, 
+                                unitSize, 
+                                <MdGroup style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                            }
+                        </div>:
+                            iconRepeater(
+                                labelObj.name, 
+                                unitSize, 
+                                <MdGroup style={{padding: '10px', height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
                     )
                 }
                 </div>
-                <div style={{ 
-                    // zIndex: '-1', 
-                    // position: 'relative', 
-                    // right: '50%', 
-                    float: 'left', padding: '20px', width: '50%'}}>
+                <div 
+                    style={{ 
+                        position: gapAnalysis ? 'absolute' : 'relative', 
+                        top: gapAnalysis ? '35%' : '0',     
+                        float: 'left', 
+                        padding: '20px', 
+                        width: gapAnalysis ? '100%' : '50%',
+                        backgroundColor: null
+                    }}
+                >
 
-                <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>Housing Supply</h2>
-                <div style={{float: 'right', width: '100%',marginBottom: '10px'}}>{supplyIcon} = {numeral(unitSize).format('0,0')} households</div>
-                {
+                <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>
+                    {gapAnalysis ? 'Housing Gap Analysis' : 'Housing Demand'}
+                </h2>
+                <div 
+                        style={{
+                            float: 'left',
+                            width: '100%',
+                            marginBottom: '10px',
+                            verticalAlign: 'center'
+                        }}>
+                            <IoMdHome style={{float: 'left', height: iconSize, width: iconSize}} /> 
+                            <h4 style={{ float: 'left', margin: '8px 0 0 5px'}}>
+                                = {numeral(unitSize).format('0,0')} 
+                                {gapAnalysis ? ' households in housing units' : ' housing units'}
+                            </h4>
+                    </div>                {
                     labelArray.filter(labelObj => labelObj.type === 'Housing Supply')
                     .reverse()    
                     .map(labelObj => 
+                        !gapAnalysis ?
                         <div style={{float: 'left', width: '100%'}}>
                         <h3 style={{margin: '10px 0 5px 0'}}>{labelObj.income}</h3>
                         {
                         iconRepeater(
-                        labelObj.name, 
-                        unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                            labelObj.name, 
+                            unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
                     }
-                        </div>
+                    </div> :
+                        iconRepeater(
+                            labelObj.name, 
+                            unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                            
                     )
                 }
                 </div>
-                {/* <h3>$100K or more</h3>
-                    {
-                        iconRepeater(
-                        'Housing Demand: $100,000 or more', 
-                        unitSize, demandIcon).map(icon => icon)
-                    } */}
             </div>
         : null }
         </div>)
