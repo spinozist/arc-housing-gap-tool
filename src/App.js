@@ -3,6 +3,12 @@ import numeral from 'numeral';
 import { Dropdown, Radio } from 'semantic-ui-react';
 import { MdGroup } from "react-icons/md";
 import { IoMdHome } from "react-icons/io";
+// npm install --save-dev @iconify/react @iconify/icons-jam
+import { Icon, InlineIcon } from '@iconify/react';
+import homeIcon from '@iconify/icons-jam/home';
+// npm install --save-dev @iconify/react @iconify/icons-whh
+import homealtIcon from '@iconify/icons-whh/homealt';
+
 
 import API from './utils/API.js';
 
@@ -135,12 +141,14 @@ const App = () => {
                     onChange={(event, data) => setGeoID(data.value)}
                 />
                  <br></br>
-                 Each <MdGroup /> equals 
+                 <h4 style={{float: 'center', margin: '15px 0 5px 0'}}>
+                     Change unit size
+                 </h4>
                 < Dropdown
                     placeholder={unitSize}
                     selection
                     compact
-                    style={{ margin: '10px 0 10px 0'}}
+                    style={{ margin: '0 0 5px 0'}}
                     options={[
                         {key: 10, value: 10, text: '10'},
                         {key: 100, value: 100, text: '100'},
@@ -229,7 +237,7 @@ const App = () => {
                 >
 
                 <h2 style={{float: 'left', width: '100%', lineHeight: '20px'}}>
-                    {gapAnalysis ? 'Housing Gap Analysis' : 'Housing Demand'}
+                    {gapAnalysis ? 'Housing Gap Analysis' : 'Housing Supply'}
                 </h2>
                 <div 
                         style={{
@@ -238,7 +246,7 @@ const App = () => {
                             marginBottom: '10px',
                             verticalAlign: 'center'
                         }}>
-                            <IoMdHome style={{float: 'left', height: iconSize, width: iconSize}} /> 
+                            <Icon icon={homeIcon} style={{float: 'left', height: iconSize, width: iconSize}} /> 
                             <h4 style={{ float: 'left', margin: '8px 0 0 5px'}}>
                                 = {numeral(unitSize).format('0,0')} 
                                 {gapAnalysis ? ' households in housing units' : ' housing units'}
@@ -253,12 +261,12 @@ const App = () => {
                         {
                         iconRepeater(
                             labelObj.name, 
-                            unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                            unitSize, <Icon icon={homeIcon} color={labelObj.color} style={{height: iconSize, width: iconSize, margin: '2px'}} />).map(icon => icon)
                     }
                     </div> :
                         iconRepeater(
                             labelObj.name, 
-                            unitSize, <IoMdHome style={{height: iconSize, width: iconSize, fill: labelObj.color, margin: '2px'}} />).map(icon => icon)
+                            unitSize, <Icon icon={homeIcon} color={labelObj.color} style={{height: iconSize, width: iconSize, margin: '2px'}} />).map(icon => icon)
                             
                     )
                 }
