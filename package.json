@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@iconify/icons-fe": "^1.0.0",
     "@iconify/icons-jam": "^1.0.0",
     "@iconify/icons-whh": "^1.0.0",
     "@iconify/react": "^1.1.1",
