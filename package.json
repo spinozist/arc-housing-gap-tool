@@ -7,7 +7,7 @@
     "@iconify/icons-jam": "^1.0.0",
     "@iconify/icons-whh": "^1.0.0",
     "@iconify/react": "^1.1.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "colormap": "^2.3.1",
     "leaflet": "^1.5.1",
     "numeral": "^2.0.6",
